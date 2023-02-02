@@ -4,12 +4,21 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class RobotContainer {
+  XboxController controller = new XboxController(Constants.DriveConstants.controllerPort);
+  private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+
   public RobotContainer() {
     configureBindings();
+
+    drivetrain.setDefaultCommand(
+      Commands.run(() -> drivetrain.arcadeDrive(controller.getLeftX(), controller.getLeftY()), drivetrain)
+    );
   }
 
   private void configureBindings() {}

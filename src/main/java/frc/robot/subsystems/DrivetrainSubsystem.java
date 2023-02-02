@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 
 public class DrivetrainSubsystem extends SubsystemBase{
     private final WPI_TalonFX left1;
@@ -20,10 +20,10 @@ public class DrivetrainSubsystem extends SubsystemBase{
     
 
     public DrivetrainSubsystem() {
-        left1 = new WPI_TalonFX(Constants.DriveConstants.left1Port);
-        left2 = new WPI_TalonFX(Constants.DriveConstants.left2Port);
-        right1 = new WPI_TalonFX(Constants.DriveConstants.right1Port);
-        right2 = new WPI_TalonFX(Constants.DriveConstants.right2Port);
+        left1 = new WPI_TalonFX(DriveConstants.left1Port);
+        left2 = new WPI_TalonFX(DriveConstants.left2Port);
+        right1 = new WPI_TalonFX(DriveConstants.right1Port);
+        right2 = new WPI_TalonFX(DriveConstants.right2Port);
         configMotors();
 
         left = new MotorControllerGroup(left1, left2);
@@ -45,6 +45,8 @@ public class DrivetrainSubsystem extends SubsystemBase{
 
         right1.setInverted(true);
         right2.setInverted(true);
+        left1.setInverted(false);
+        left2.setInverted(false);
         
         left1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         left2.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);

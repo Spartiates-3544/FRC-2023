@@ -4,14 +4,16 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class RobotContainer {
-  XboxController controller = new XboxController(Constants.DriveConstants.controllerPort);
+  CommandXboxController controller = new CommandXboxController(Constants.DriveConstants.controllerPort);
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+  private final ArmSubsystem arm = new ArmSubsystem();
 
   public RobotContainer() {
     configureBindings();
@@ -21,7 +23,9 @@ public class RobotContainer {
     );
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    controller.a().onTrue(arm.setArmGrabConeHP());
+  }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");

@@ -40,5 +40,45 @@ public final class Constants {
         }
     }
 
+    public static final class TurretConstants {
+        public enum Apriltags {
+            REDRIGHT1,
+            REDMIDDLE2,
+            REDLEFT3,
+            BLUERIGHT6,
+            BLUEMIDDLE7,
+            BLUELEFT8,
+            BLUEDOUBLE4,
+            REDDOUBLE5
+        }
+
+        public enum Armpositions {
+            FRONT,
+            BACK
+        }
+
+        public static final class ArmPositions {
+            public static final int front = 0;
+            public static final int back = 0;
+        }
+
+        public static final int turretPort = 6;
+        public static final int pidIdx = 0;
+
+        public static final int limelightTurretP = 0;
+        public static final int limelightTurretI = 0;
+        public static final int limelightTurretD = 0;
+
+        public static final int turretF = 0;
+        public static final int turretP = 0;
+        public static final int turretI = 0;
+        public static final int turretD = 0;
+        public static final int turretAccel = 0;
+        public static final int turretCruise = 0;
+
+        public static final int slotIdx = 0;
+
+    }
+
 }
 

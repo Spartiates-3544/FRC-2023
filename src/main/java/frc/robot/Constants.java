@@ -34,9 +34,30 @@ public final class Constants {
         public static final double stage2RevLimit = 0;
         public static final boolean stage2Invert = true;
 
+        public static final double pourcentageDeadband = 0.01;
+        public static final double IZone = 500;
+
         public static final class ArmPickupConeHP {
             public static final double stage1Pos = 0;
             public static final double stage2Pos = 0;
+        }
+
+        public enum Armpositions {
+            STOWED,
+            GROUND,
+            HIGH
+        }
+
+        public static final class ArmPositions {
+            public static final int stowed1 = 0;
+            public static final int stowed2 = 0;
+
+            public static final int ground1 = 0;
+            public static final int ground2 = 0;
+
+            public static final int high1 = 0;
+            public static final int high2 = 0;
+
         }
     }
 
@@ -52,12 +73,12 @@ public final class Constants {
             REDDOUBLE5
         }
 
-        public enum Armpositions {
+        public enum Turretpositions {
             FRONT,
             BACK
         }
 
-        public static final class ArmPositions {
+        public static final class TurretPositions {
             public static final int front = 0;
             public static final int back = 0;
         }
@@ -76,7 +97,11 @@ public final class Constants {
         public static final int turretAccel = 0;
         public static final int turretCruise = 0;
 
+        public static final double pourcentDeadband = 0.01;
+
         public static final int slotIdx = 0;
+        public static final double IZone = 500;
+        public static final int calSwitchChannel = 0;
 
     }
 

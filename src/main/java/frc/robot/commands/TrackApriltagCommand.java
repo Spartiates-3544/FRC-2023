@@ -14,7 +14,7 @@ public class TrackApriltagCommand extends PIDCommand{
             new PIDController(TurretConstants.turretP, TurretConstants.turretI, TurretConstants.turretD),
             limelight::getTx,
             0,
-            output -> turret.setTurret(output * .5),
+            output -> turret.setTurret(output),
             turret
             ); 
         

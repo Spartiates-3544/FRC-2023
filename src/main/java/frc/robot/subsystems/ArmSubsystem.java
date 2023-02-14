@@ -5,8 +5,9 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+//import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.Utilities.Utilities;
 import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -26,6 +27,9 @@ public class ArmSubsystem extends SubsystemBase {
         stage1.setNeutralMode(NeutralMode.Brake);
         stage2.setNeutralMode(NeutralMode.Brake);
 
+        stage1.configNeutralDeadband(ArmConstants.pourcentageDeadband);
+        stage2.configNeutralDeadband(ArmConstants.pourcentageDeadband);
+
         //Config sensor for primary pid
         stage1.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, ArmConstants.slotIdx, 0);
         stage2.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, ArmConstants.slotIdx, 0);
@@ -36,6 +40,7 @@ public class ArmSubsystem extends SubsystemBase {
         stage1.config_kF(ArmConstants.slotIdx, ArmConstants.stage1F);
         stage1.config_kP(ArmConstants.slotIdx, ArmConstants.stage1P);
         stage1.config_kI(ArmConstants.slotIdx, ArmConstants.stage1I);
+        stage1.config_IntegralZone(ArmConstants.slotIdx, ArmConstants.IZone);
         stage1.config_kD(ArmConstants.slotIdx, ArmConstants.stage1D);
         stage1.configMotionCruiseVelocity(ArmConstants.stage1Cruise);
         stage1.configMotionAcceleration(ArmConstants.stage1Accel);
@@ -79,10 +84,20 @@ public class ArmSubsystem extends SubsystemBase {
         stage2.set(TalonFXControlMode.MotionMagic, pos);
     }
 
+    public boolean stage1AtSetpoint() {
+        return Utilities.inRange(stage1.getActiveTrajectoryPosition() - 1024, stage1.getActiveTrajectoryPosition() + 1024, stage1.getSelectedSensorPosition());
+    }
+
+    public boolean stage2AtSetpoint() {
+        return Utilities.inRange(stage2.getActiveTrajectoryPosition() - 1024, stage2.getActiveTrajectoryPosition() + 1024, stage2.getSelectedSensorPosition());
+    }
+
+    /*
     //Sample command
     public CommandBase setArmGrabConeHP() {
         return this.runOnce(() -> {
             setStage1Pos(ArmConstants.ArmPickupConeHP.stage1Pos); 
             setStage2Pos(ArmConstants.ArmPickupConeHP.stage2Pos);});
     }
+    */
 }

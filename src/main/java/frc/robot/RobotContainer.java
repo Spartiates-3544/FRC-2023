@@ -8,14 +8,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.TurretConstants;
 import frc.robot.Constants.ArmConstants.Armpositions;
-import frc.robot.Constants.TurretConstants.Turretpositions;
+import frc.robot.Constants.TurretConstants.TurretPos;
+import frc.robot.commands.CalibrateTurretCommand;
 import frc.robot.commands.SetArmPositionCommand;
 import frc.robot.commands.SetTurretPositionCommand;
+import frc.robot.commands.TrackApriltagCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class RobotContainer {
@@ -23,30 +28,31 @@ public class RobotContainer {
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
   private final ArmSubsystem arm = new ArmSubsystem();
   private final TurretSubsystem turret = new TurretSubsystem();
+  private final Limelight limeight = new Limelight();
 
   public RobotContainer() {
     configureBindings();
 
     drivetrain.setDefaultCommand(
-      Commands.run(() -> drivetrain.arcadeDrive(controller.getLeftX() * .5, controller.getLeftY() * .5), drivetrain)
+      Commands.run(() -> drivetrain.arcadeDrive(controller.getLeftY() * .5, controller.getRightX() * .5), drivetrain)
     );
 
-    //Calibrate turret on startup (ofc when the robot is initially enabled)
-    CommandScheduler.getInstance().schedule(new FunctionalCommand(
-      null,
-     () -> turret.setTurret(-0.2),
-      interrupted -> {turret.setTurret(0); turret.resetEncoder();},
-       () -> turret.getCalibrationSwitch(), turret)
-       );
+    turret.setDefaultCommand(new TrackApriltagCommand(turret, limeight, TurretConstants.Apriltags.REDRIGHT1));
   }
 
   private void configureBindings() {
+    
+    //controller.a().onTrue(new SetTurretPositionCommand(turret, Constants.TurretConstants.TurretPos.BACK));
+    controller.a().onTrue(Commands.runOnce(() -> turret.setMagicSetpoint(231000), turret));
+    controller.x().onTrue(Commands.runOnce(() -> turret.setMagicSetpoint(0), turret));
     //Change arm position
-    controller.b().onTrue(new SequentialCommandGroup(
+    /*controller.b().onTrue(new SequentialCommandGroup(
       new SetArmPositionCommand(arm, Armpositions.STOWED), 
       new SetTurretPositionCommand(turret, Turretpositions.BACK), 
       new SetArmPositionCommand(arm, Armpositions.HIGH)
       ));
+      */
+    controller.y().onTrue(new CalibrateTurretCommand(turret));
   }
 
   public Command getAutonomousCommand() {

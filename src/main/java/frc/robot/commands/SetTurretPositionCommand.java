@@ -6,9 +6,9 @@ import frc.robot.subsystems.TurretSubsystem;
 
 public class SetTurretPositionCommand extends CommandBase {
     private TurretSubsystem turret;
-    private TurretConstants.Turretpositions position;
+    private TurretConstants.TurretPos position;
 
-    public SetTurretPositionCommand(TurretSubsystem turret, TurretConstants.Turretpositions position) {
+    public SetTurretPositionCommand(TurretSubsystem turret, TurretConstants.TurretPos position) {
         this.turret = turret;
         this.position = position;
         addRequirements(this.turret);

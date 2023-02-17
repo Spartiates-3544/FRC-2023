@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.TurretConstants;
 
 public class Limelight {
@@ -10,6 +11,10 @@ public class Limelight {
 
     public Limelight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
+    }
+
+    public void periodic() {
+        SmartDashboard.putNumber("tx", getTx());
     }
 
     public double getTx() {

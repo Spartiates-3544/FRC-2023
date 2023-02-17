@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Utilities.Utilities;
 import frc.robot.Constants.TurretConstants;
@@ -20,13 +21,18 @@ public class TurretSubsystem extends SubsystemBase{
         configMotors();
     }
 
+    public void periodic() {
+        SmartDashboard.putNumber("Turret encoder", turret.getSelectedSensorPosition());
+    }
+
     private void configMotors() {
         turret.configFactoryDefault();
         turret.setNeutralMode(NeutralMode.Brake);
-        turret.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, TurretConstants.pidIdx, 0);
+        turret.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, TurretConstants.pidIdx, 30);
         turret.setInverted(false);
         turret.configNeutralDeadband(TurretConstants.pourcentDeadband);
 
+        turret.selectProfileSlot(TurretConstants.slotIdx, 0);
         turret.config_kF(TurretConstants.slotIdx, TurretConstants.turretF);
         turret.config_kP(TurretConstants.slotIdx, TurretConstants.turretP);
         turret.config_kI(TurretConstants.slotIdx, TurretConstants.turretI);
@@ -42,7 +48,7 @@ public class TurretSubsystem extends SubsystemBase{
         turret.set(TalonFXControlMode.PercentOutput, pourcentage);
     }
 
-    public void setMagicSetpoint(int setpoint) {
+    public void setMagicSetpoint(double setpoint) {
         turret.set(TalonFXControlMode.MotionMagic, setpoint);
     }
 

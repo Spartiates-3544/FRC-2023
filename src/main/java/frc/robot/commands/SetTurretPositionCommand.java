@@ -1,36 +1,27 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.TurretConstants;
+import frc.Utilities.Utilities;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class SetTurretPositionCommand extends CommandBase {
     private TurretSubsystem turret;
-    private TurretConstants.TurretPos position;
+    private double position;
 
-    public SetTurretPositionCommand(TurretSubsystem turret, TurretConstants.TurretPos position) {
+    public SetTurretPositionCommand(TurretSubsystem turret, double position) {
         this.turret = turret;
         this.position = position;
         addRequirements(this.turret);
     }
 
     public void initialise() {
-        switch (position) {
-            case FRONT:
-                turret.setMagicSetpoint(TurretConstants.TurretPositions.front);
-                break;
-        
-            case BACK:
-                turret.setMagicSetpoint(TurretConstants.TurretPositions.back);
-                break;
+    }
 
-            default:
-                turret.setMagicSetpoint(TurretConstants.TurretPositions.front);
-                break;
-        }
+    public void execute() {
+        turret.setMagicSetpoint(position);
     }
 
     public boolean isFinished() {
-        return turret.atSetpoint();
+        return Utilities.inRange(position - 50, position + 50, turret.getEncoder());
     }
 }

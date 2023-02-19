@@ -5,9 +5,9 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.Utilities.Utilities;
 import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -20,21 +20,27 @@ public class ArmSubsystem extends SubsystemBase {
         configMotors();
     }
 
+    public void periodic() {
+        SmartDashboard.putNumber("Stage 1 encoder", stage1.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Stage 2 encoder", stage2.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Stage 1 output", stage1.get());
+        SmartDashboard.putNumber("Stage 2 output", stage2.get());
+    }
+
     private void configMotors() {
         stage1.configFactoryDefault();
         stage2.configFactoryDefault();
 
-        stage1.setNeutralMode(NeutralMode.Brake);
-        stage2.setNeutralMode(NeutralMode.Brake);
+        stage1.setNeutralMode(NeutralMode.Coast);
+        stage2.setNeutralMode(NeutralMode.Coast);
 
         stage1.configNeutralDeadband(ArmConstants.pourcentageDeadband);
         stage2.configNeutralDeadband(ArmConstants.pourcentageDeadband);
 
         //Config sensor for primary pid
-        stage1.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, ArmConstants.slotIdx, 0);
-        stage2.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, ArmConstants.slotIdx, 0);
+        stage1.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, ArmConstants.slotIdx, 30);
+        stage2.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, ArmConstants.slotIdx, 30);
 
-        //TODO
         //Gains for motionmagic
         stage1.selectProfileSlot(0, 0);
         stage1.config_kF(ArmConstants.slotIdx, ArmConstants.stage1F);
@@ -52,6 +58,7 @@ public class ArmSubsystem extends SubsystemBase {
         stage2.configMotionCruiseVelocity(ArmConstants.stage2Cruise);
         stage2.configMotionAcceleration(ArmConstants.stage2Accel);
         //Soft limits
+        /*/
         stage1.configForwardSoftLimitThreshold(ArmConstants.stage1FwdLimit);
         stage1.configReverseSoftLimitThreshold(ArmConstants.stage1RevLimit);
         stage1.configForwardSoftLimitEnable(true);
@@ -61,6 +68,7 @@ public class ArmSubsystem extends SubsystemBase {
         stage2.configReverseSoftLimitThreshold(ArmConstants.stage2RevLimit);
         stage2.configForwardSoftLimitEnable(true);
         stage2.configReverseSoftLimitEnable(true);
+        */
 
         //Positive value = Arm goes up
         stage1.setInverted(ArmConstants.stage1Invert);
@@ -84,12 +92,30 @@ public class ArmSubsystem extends SubsystemBase {
         stage2.set(TalonFXControlMode.MotionMagic, pos);
     }
 
+    /*
     public boolean stage1AtSetpoint() {
-        return Utilities.inRange(stage1.getActiveTrajectoryPosition() - 1024, stage1.getActiveTrajectoryPosition() + 1024, stage1.getSelectedSensorPosition());
+        return Utilities.inRange(stage1.getActiveTrajectoryPosition() - 50, stage1.getActiveTrajectoryPosition() + 50, stage1.getSelectedSensorPosition());
     }
 
     public boolean stage2AtSetpoint() {
-        return Utilities.inRange(stage2.getActiveTrajectoryPosition() - 1024, stage2.getActiveTrajectoryPosition() + 1024, stage2.getSelectedSensorPosition());
+        return Utilities.inRange(stage2.getActiveTrajectoryPosition() - 50, stage2.getActiveTrajectoryPosition() + 50, stage2.getSelectedSensorPosition());
+    }
+    */
+
+    public double getStage1Encoder() {
+        return stage1.getSelectedSensorPosition();
+    }
+
+    public double getStage2Encoder() {
+        return stage2.getSelectedSensorPosition();
+    }
+
+    public void resetStage1Encoder() {
+        stage1.setSelectedSensorPosition(0);
+    }
+
+    public void resetStage2Encoder() {
+        stage2.setSelectedSensorPosition(0);
     }
 
     /*

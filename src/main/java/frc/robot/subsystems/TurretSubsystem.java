@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.Utilities.Utilities;
 import frc.robot.Constants.TurretConstants;
 
 public class TurretSubsystem extends SubsystemBase{
@@ -60,7 +59,7 @@ public class TurretSubsystem extends SubsystemBase{
         return calibrationSwitch.get();
     }
 
-    public boolean atSetpoint() {
-        return Utilities.inRange(turret.getActiveTrajectoryPosition() - 1024, turret.getActiveTrajectoryPosition() + 1024, turret.getSelectedSensorPosition());
+    public double getEncoder() {
+        return turret.getSelectedSensorPosition();
     }
 }

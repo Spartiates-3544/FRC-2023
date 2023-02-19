@@ -7,6 +7,7 @@ public final class Constants {
         public static final int right1Port = 2;
         public static final int right2Port = 3;
         public static final int controllerPort = 0;
+        public static final int controller2Port = 1;
     }
 
     public static final class ArmConstants {
@@ -14,25 +15,25 @@ public final class Constants {
         public static final int stage2Port = 5;
         public static final int slotIdx = 0;
 
-        public static final double stage1F = 0;
-        public static final double stage1P = 0;
-        public static final double stage1I = 0;
+        public static final double stage1F = 0.103;
+        public static final double stage1P = 0.7;
+        public static final double stage1I = 0.01;
         public static final double stage1D = 0;
-        public static final double stage1Accel = 0;
-        public static final double stage1Cruise = 0;
+        public static final double stage1Accel = 20000;
+        public static final double stage1Cruise = 25000;
         public static final double stage1FwdLimit = 0;
         public static final double stage1RevLimit = 0;
         public static final boolean stage1Invert = false;
 
-        public static final double stage2F = 0;
-        public static final double stage2P = 0;
-        public static final double stage2I = 0;
+        public static final double stage2F = 0.08;
+        public static final double stage2P = 0.75;
+        public static final double stage2I = 0.008;
         public static final double stage2D = 0;
-        public static final double stage2Accel = 0;
-        public static final double stage2Cruise = 0;
+        public static final double stage2Accel = 3000;
+        public static final double stage2Cruise = 5000;
         public static final double stage2FwdLimit = 0;
         public static final double stage2RevLimit = 0;
-        public static final boolean stage2Invert = true;
+        public static final boolean stage2Invert = false;
 
         public static final double pourcentageDeadband = 0.01;
         public static final double IZone = 500;
@@ -40,12 +41,6 @@ public final class Constants {
         public static final class ArmPickupConeHP {
             public static final double stage1Pos = 0;
             public static final double stage2Pos = 0;
-        }
-
-        public enum Armpositions {
-            STOWED,
-            GROUND,
-            HIGH
         }
 
         public static final class ArmPositions {
@@ -73,11 +68,6 @@ public final class Constants {
             REDDOUBLE5
         }
 
-        public enum TurretPos {
-            FRONT,
-            BACK
-        }
-
         public static final class TurretPositions {
             public static final int front = 0;
             public static final int back = 20000;
@@ -86,7 +76,8 @@ public final class Constants {
         public static final int turretPort = 6;
         public static final int pidIdx = 0;
 
-        public static final double limelightTurretP = 0.03;
+        public static final double limelightTurretP = 0.03
+        ;
         public static final double limelightTurretI = 0;
         public static final double limelightTurretD = 0;
 

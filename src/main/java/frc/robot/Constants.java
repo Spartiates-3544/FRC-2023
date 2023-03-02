@@ -98,5 +98,17 @@ public final class Constants {
 
     }
 
+    public static final class ManipulatorConstants {
+        //TODO
+        public static final int manipulatorPort = 0;
+
+        public static final double velocityP = 0;
+        public static final double velocityI = 0;
+        public static final double velocityD = 0;
+        public static final double velocityF = 0;
+
+        public static final double cubePickupVelocity = 0;
+    }
+
 }
 

@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.TurretConstants;
 import frc.robot.commands.SetArmPositionCommand;
 import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.TrackApriltagCommand;
@@ -31,7 +30,7 @@ public class RobotContainer {
       Commands.run(() -> drivetrain.arcadeDrive(controller.getLeftY() * .5, controller.getRightX() * .5), drivetrain)
     );
 
-    turret.setDefaultCommand(new TrackApriltagCommand(turret, TurretConstants.Apriltags.REDRIGHT1));
+    turret.setDefaultCommand(new TrackApriltagCommand(turret, 1));
   }
 
   private void configureBindings() {

@@ -8,7 +8,7 @@ import frc.robot.subsystems.TurretSubsystem;
 
 public class TrackApriltagCommand extends PIDCommand{
 
-    public TrackApriltagCommand(TurretSubsystem turret, TurretConstants.Apriltags selectedTag) {
+    public TrackApriltagCommand(TurretSubsystem turret, int pipeline) {
         super(
             new PIDController(TurretConstants.limelightTurretP, TurretConstants.limelightTurretI, TurretConstants.limelightTurretD),
             () -> LimelightHelpers.getTX("limelight"),
@@ -16,6 +16,6 @@ public class TrackApriltagCommand extends PIDCommand{
             output -> turret.setTurret(-output),
             turret
             ); 
-        //limelight.setPipeline(selectedTag);
+        LimelightHelpers.setPipelineIndex("limelight", pipeline);
     }
 }

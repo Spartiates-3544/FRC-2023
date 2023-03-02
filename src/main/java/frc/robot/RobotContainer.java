@@ -15,7 +15,6 @@ import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.TrackApriltagCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class RobotContainer {
@@ -24,7 +23,6 @@ public class RobotContainer {
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
   private final ArmSubsystem arm = new ArmSubsystem();
   private final TurretSubsystem turret = new TurretSubsystem();
-  private final Limelight limeight = new Limelight();
 
   public RobotContainer() {
     configureBindings();
@@ -33,7 +31,7 @@ public class RobotContainer {
       Commands.run(() -> drivetrain.arcadeDrive(controller.getLeftY() * .5, controller.getRightX() * .5), drivetrain)
     );
 
-    turret.setDefaultCommand(new TrackApriltagCommand(turret, limeight, TurretConstants.Apriltags.REDRIGHT1));
+    turret.setDefaultCommand(new TrackApriltagCommand(turret, TurretConstants.Apriltags.REDRIGHT1));
   }
 
   private void configureBindings() {

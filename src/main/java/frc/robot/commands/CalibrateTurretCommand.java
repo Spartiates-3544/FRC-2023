@@ -20,6 +20,7 @@ public class CalibrateTurretCommand extends CommandBase {
         turret.resetEncoder();
     }
 
+
     public boolean isFinished() {
         return !turret.getCalibrationSwitch();
     }

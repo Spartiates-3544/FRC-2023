@@ -24,6 +24,13 @@ public class SetArmPositionCommand extends CommandBase {
         arm.setStage2Pos(stage2Pos);
     }
 
+    public void end(boolean interrupted) {
+        if (interrupted) {
+            arm.setStage1Pourcentage(0);
+            arm.setStage2Pourcentage(0);
+        }
+    }
+
     public boolean isFinished() {
         //return arm.stage1AtSetpoint() && arm.stage2AtSetpoint();
         return Utilities.inRange(stage1Pos - 50, stage1Pos + 50, arm.getStage1Encoder()) && Utilities.inRange(stage2Pos - 50, stage2Pos + 50, arm.getStage2Encoder());

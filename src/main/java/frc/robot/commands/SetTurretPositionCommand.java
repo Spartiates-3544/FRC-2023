@@ -21,6 +21,10 @@ public class SetTurretPositionCommand extends CommandBase {
         turret.setMagicSetpoint(position);
     }
 
+    public void end(boolean interrupted) {
+        turret.setTurret(0);
+    }
+
     public boolean isFinished() {
         return Utilities.inRange(position - 50, position + 50, turret.getEncoder());
     }

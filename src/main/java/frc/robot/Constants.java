@@ -1,5 +1,6 @@
 package frc.robot;
 
+
 public final class Constants {
     public static final class DriveConstants {
         public static final int left1Port = 0;
@@ -8,6 +9,7 @@ public final class Constants {
         public static final int right2Port = 3;
         public static final int controllerPort = 0;
         public static final int controller2Port = 1;
+        public static final int gyroPort = 10;
     }
 
     public static final class ArmConstants {
@@ -15,28 +17,37 @@ public final class Constants {
         public static final int stage2Port = 5;
         public static final int slotIdx = 0;
 
-        public static final double stage1F = 0.103;
-        public static final double stage1P = 0.7;
-        public static final double stage1I = 0.01;
-        public static final double stage1D = 0;
-        public static final double stage1Accel = 20000;
-        public static final double stage1Cruise = 25000;
+        public static final double stage1StallPourcentage1 = 0.0528;
+        public static final double stage1StallPourcentage2 = 0.0381;
+
+        public static final double stage2StallPourcentage = 0.0449;
+        
+
+        public static final double stage1F = 0;
+        public static final double stage1P = 1;
+        public static final double stage1I = 0;
+        public static final double stage1D = 0.030;
+        public static final double stage1Accel = 80;
+        public static final double stage1Cruise = 150;
         public static final double stage1FwdLimit = 0;
         public static final double stage1RevLimit = 0;
-        public static final boolean stage1Invert = false;
+        public static final boolean stage1Invert = true;
 
-        public static final double stage2F = 0.08;
-        public static final double stage2P = 0.75;
-        public static final double stage2I = 0.008;
-        public static final double stage2D = 0;
-        public static final double stage2Accel = 3000;
-        public static final double stage2Cruise = 5000;
+        public static final double stage2F = 0;
+        public static final double stage2P = 0.9;
+        public static final double stage2I = 0;
+        public static final double stage2D = 0.045;
+        public static final double stage2Accel = 15;
+        public static final double stage2Cruise = 25;
         public static final double stage2FwdLimit = 0;
         public static final double stage2RevLimit = 0;
-        public static final boolean stage2Invert = false;
+        public static final boolean stage2Invert = true;
 
-        public static final double pourcentageDeadband = 0.01;
-        public static final double IZone = 500;
+        public static final double pourcentageDeadband = 0;
+        public static final double IZone1 = 10;
+		public static final int CANCoder1Port = 9;
+        public static final int CANCoder2Port = 8;
+        public static final double IZone2 = 10;
 
         public static final class ArmPickupConeHP {
             public static final double stage1Pos = 0;
@@ -82,7 +93,7 @@ public final class Constants {
         public static final double limelightTurretD = 0;
 
         public static final double turretF = 0.05465;
-        //public static final double turretF = 0.90465;
+        //public static final double turretF = 0.75;
         public static final double turretP = 0.3;
         //public static final double turretP = 1.1;
         public static final double turretI = 0.0105;
@@ -100,7 +111,7 @@ public final class Constants {
 
     public static final class ManipulatorConstants {
         //TODO
-        public static final int manipulatorPort = 0;
+        public static final int manipulatorPort = 7;
 
         public static final double velocityP = 0;
         public static final double velocityI = 0;

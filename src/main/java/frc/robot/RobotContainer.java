@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SetArmPositionCommand;
@@ -14,6 +13,7 @@ import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.TrackApriltagCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ManipulatorSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class RobotContainer {
@@ -22,27 +22,34 @@ public class RobotContainer {
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
   private final ArmSubsystem arm = new ArmSubsystem();
   private final TurretSubsystem turret = new TurretSubsystem();
+  private final ManipulatorSubsystem manipulator = new ManipulatorSubsystem();
 
   public RobotContainer() {
     configureBindings();
 
     drivetrain.setDefaultCommand(
-      Commands.run(() -> drivetrain.arcadeDrive(controller.getLeftY() * .5, controller.getRightX() * .5), drivetrain)
+      Commands.run(() -> drivetrain.arcadeDrive(-controller.getLeftY(), ( controller.getRightTriggerAxis() - controller.getLeftTriggerAxis() )), drivetrain)
     );
 
-    turret.setDefaultCommand(new TrackApriltagCommand(turret, 1));
+    //turret.setDefaultCommand(new TrackApriltagCommand(turret, 1));
+
+    //arm.setDefaultCommand(Commands.run(() -> { arm.setStage1Pourcentage(controller.getLeftY() * 0.5); arm.setStage2Pourcentage(controller.getRightY() * 0.5); }, arm));
   }
 
   private void configureBindings() {
+    //Cube
+    controller2.button(6).onTrue(new SetArmPositionCommand(arm, 2400, 1250));
+
+    //controller2.button(6).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 2400, 1250), Commands.runEnd(() -> drivetrain.setMaxOutput(0.6), drivetrain.setMaxOutput(1),)));
     
-    //controller.a().onTrue(new SetTurretPositionCommand(turret, Constants.TurretConstants.TurretPos.BACK));
-    controller.a().onTrue(Commands.runOnce(() -> turret.setMagicSetpoint(231000), turret));
+    //Low
+    controller2.button(7).onTrue(new SetArmPositionCommand(arm, 370, 1800));
+    //Stowed
+    controller2.button(3).onTrue(new SetArmPositionCommand(arm, 330, 2775));
 
-    //Go to front, Mid
-    controller2.button(7).onTrue(new SequentialCommandGroup(new SetArmPositionCommand(arm, 0, 0), new SetTurretPositionCommand(turret, 0), new SetArmPositionCommand(arm, 82386, -73897)));
+    controller.x().whileTrue(Commands.startEnd(() -> manipulator.setPourcentage(-0.4), () -> manipulator.setPourcentage(0), manipulator));
+    controller.y().whileTrue(Commands.startEnd(() -> manipulator.setPourcentage(0.4), () -> manipulator.setPourcentage(0), manipulator));
 
-    //Reset encoders
-    controller.y().onTrue(Commands.runOnce(() -> {arm.resetStage1Encoder(); arm.resetStage2Encoder();}, arm));
   }
 
   public Command getAutonomousCommand() {

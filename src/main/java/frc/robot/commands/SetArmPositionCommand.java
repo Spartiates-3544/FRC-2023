@@ -25,10 +25,12 @@ public class SetArmPositionCommand extends CommandBase {
     }
 
     public void end(boolean interrupted) {
+        /*
         if (interrupted) {
             arm.setStage1Pourcentage(0);
             arm.setStage2Pourcentage(0);
         }
+        */
     }
 
     public boolean isFinished() {

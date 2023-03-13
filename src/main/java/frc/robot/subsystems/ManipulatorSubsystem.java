@@ -21,7 +21,7 @@ public class ManipulatorSubsystem extends SubsystemBase{
     private void configMotors() {
         manipulator.configFactoryDefault();
 
-        manipulator.setNeutralMode(NeutralMode.Coast);
+        manipulator.setNeutralMode(NeutralMode.Brake);
         manipulator.setInverted(false);
         manipulator.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 

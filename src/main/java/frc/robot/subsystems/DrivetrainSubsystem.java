@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +24,7 @@ public class DrivetrainSubsystem extends SubsystemBase{
     private final MotorControllerGroup right;
     private final DifferentialDrive drive;
     private final WPI_PigeonIMU gyro;
+    private final DifferentialDriveOdometry odometry;
     
 
     public DrivetrainSubsystem() {
@@ -35,6 +39,8 @@ public class DrivetrainSubsystem extends SubsystemBase{
         right = new MotorControllerGroup(right1, right2);
 
         drive = new DifferentialDrive(left, right);
+
+        odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), getLeftSideMeters(), getRightSideMeters());
     }
 
     private void configMotors() {
@@ -59,8 +65,11 @@ public class DrivetrainSubsystem extends SubsystemBase{
         right2.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
 
+    //TODO Check if odometry is accurate and working, also check for Field2d
     public void periodic() {
-        SmartDashboard.putData("Angle gyro", gyro);
+        odometry.update(gyro.getRotation2d(), getLeftSideMeters(), getRightSideMeters());
+
+        SmartDashboard.putData("Gyro angle", gyro);
     }
 
     public void arcadeDrive(double xSpeed, double zRotation) {
@@ -75,20 +84,50 @@ public class DrivetrainSubsystem extends SubsystemBase{
         right2.setSelectedSensorPosition(0);
     }
 
-    public double getAverageLeftEncoders() {
-        return (left1.getSelectedSensorPosition() + left2.getSelectedSensorPosition()) / 2; 
+    public double getLeftSideMeters() {
+        return ( (left1.getSelectedSensorPosition() + left2.getSelectedSensorPosition()) / 2 ) * DriveConstants.kEncoderDistancePerPulseMeters; 
     }
 
-    public double getAverageRightEncoders() {
-        return (right1.getSelectedSensorPosition() + right2.getSelectedSensorPosition()) / 2; 
+    public double getRightSideMeters() {
+        return ( (right1.getSelectedSensorPosition() + right2.getSelectedSensorPosition()) / 2 ) * DriveConstants.kEncoderDistancePerPulseMeters; 
     }
 
-    public double getAverageEncoders() {
-        return (getAverageLeftEncoders() + getAverageRightEncoders()) / 2;
-    }
 
     public void setMaxOutput(double maxOutput) {
         drive.setMaxOutput(maxOutput);
+    }
+
+    public double getLeftSideVelocityMetersPerSecond() {
+        double avgTicksPerSecond = ( (left1.getSelectedSensorVelocity() + left2.getSelectedSensorVelocity()) / 2 ) * 10; 
+        return avgTicksPerSecond * DriveConstants.kEncoderDistancePerPulseMeters;
+    }
+
+    public double getRightSideVelocityMetersPerSecond() {
+        double avgTicksPerSecond = ( (right1.getSelectedSensorVelocity() + right2.getSelectedSensorVelocity()) / 2 ) * 10; 
+        return avgTicksPerSecond * DriveConstants.kEncoderDistancePerPulseMeters;
+    }
+
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(getLeftSideVelocityMetersPerSecond(), getRightSideVelocityMetersPerSecond());
+    }
+
+    public double getHeading() {
+        return gyro.getRotation2d().getDegrees();
+    }
+
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
+    }
+
+    public void tankDriveVolts(double leftVolts, double rightVolts) {
+        left.setVoltage(leftVolts);
+        right.setVoltage(rightVolts);
+        drive.feed();
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        odometry.resetPosition(gyro.getRotation2d(), getLeftSideMeters(), getRightSideMeters(), pose);
     }
 
 }

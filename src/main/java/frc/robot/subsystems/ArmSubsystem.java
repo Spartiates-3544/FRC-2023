@@ -9,7 +9,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
-import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -57,14 +56,14 @@ public class ArmSubsystem extends SubsystemBase {
         CANCoder1.configFactoryDefault();
         CANCoder2.configFactoryDefault();
 
-        CANCoder1.configSensorDirection(true, 30);
-        CANCoder2.configSensorDirection(false, 30);
+        CANCoder1.configSensorDirection(ArmConstants.CANCoder1Direction, 30);
+        CANCoder2.configSensorDirection(ArmConstants.CANCoder2Direction, 30);
 
 
-        CANCoder1.configFeedbackCoefficient(0.06591797, "deg", SensorTimeBase.PerSecond);
-        CANCoder1.configMagnetOffset(40);
+        CANCoder1.configFeedbackCoefficient(ArmConstants.CANCoder1SensorCoef, "deg", SensorTimeBase.PerSecond);
+        CANCoder1.configMagnetOffset(ArmConstants.CANCoder1MagnetOffset);
 
-        CANCoder2.configMagnetOffset(-253);
+        CANCoder2.configMagnetOffset(ArmConstants.CANCoder2MagnetOffset);
     }
 
     private void configMotors() {
@@ -77,12 +76,10 @@ public class ArmSubsystem extends SubsystemBase {
         stage1.configNeutralDeadband(ArmConstants.pourcentageDeadband);
         stage2.configNeutralDeadband(ArmConstants.pourcentageDeadband);
 
-        stage1.setSensorPhase(true);
-        stage2.setSensorPhase(true);
+        stage1.setSensorPhase(ArmConstants.stage1SensorPhase);
+        stage2.setSensorPhase(ArmConstants.stage2SensorPhase);
 
         //Config sensor for primary pid
-        //stage1.configSelectedFeedbackSensor(RemoteSensorSource.CANCoder, ArmConstants.slotIdx, 30);
-        //stage2.configSelectedFeedbackSensor(RemoteSensorSource.CANCoder, ArmConstants.slotIdx, 30);
         stage1.configRemoteFeedbackFilter(CANCoder1.getDeviceID(), RemoteSensorSource.CANCoder, 0);
         stage2.configRemoteFeedbackFilter(CANCoder2.getDeviceID(), RemoteSensorSource.CANCoder, 1);
         stage1.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, ArmConstants.slotIdx, 30);
@@ -131,14 +128,12 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public double getStage1AngleRadians() {
-        int kMeasuredAngleHorizontal = 154;
-        double radians = Math.toRadians(CANCoder1.getAbsolutePosition() - kMeasuredAngleHorizontal);
+        double radians = Math.toRadians(CANCoder1.getAbsolutePosition() - ArmConstants.stage1MeasuredAngleHorizontal);
         return radians;
     }
 
     public double getStage2AngleRadians() {
-        int kMeasuredAngleHorizontal = 91;
-        double radians = Math.toRadians(CANCoder2.getAbsolutePosition() - kMeasuredAngleHorizontal);
+        double radians = Math.toRadians(CANCoder2.getAbsolutePosition() - ArmConstants.stage2MeasuredAngleHorizontal);
         return radians;
     }
 
@@ -148,26 +143,16 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setStage1Pos(double pos) {
         double feedforward = ArmConstants.stage1StallPourcentage1 * Math.cos(getStage1AngleRadians() + (ArmConstants.stage1StallPourcentage2 - ArmConstants.stage1StallPourcentage1) * Math.cos(getStage2AngleRadians()));
-        SmartDashboard.putNumber("Stage1 Ff", feedforward);
+        //SmartDashboard.putNumber("Stage1 Ff", feedforward);
         stage1.set(TalonFXControlMode.MotionMagic, pos, DemandType.ArbitraryFeedForward, feedforward);
 
     }
 
     public void setStage2Pos(double pos) {
         double feedforward = Math.cos(getStage2AngleRadians()) * ArmConstants.stage2StallPourcentage;
-        SmartDashboard.putNumber("Stage2 Ff", feedforward);
+        //SmartDashboard.putNumber("Stage2 Ff", feedforward);
         stage2.set(TalonFXControlMode.MotionMagic, pos, DemandType.ArbitraryFeedForward, feedforward);
     }
-
-    /*
-    public boolean stage1AtSetpoint() {
-        return Utilities.inRange(stage1.getActiveTrajectoryPosition() - 50, stage1.getActiveTrajectoryPosition() + 50, stage1.getSelectedSensorPosition());
-    }
-
-    public boolean stage2AtSetpoint() {
-        return Utilities.inRange(stage2.getActiveTrajectoryPosition() - 50, stage2.getActiveTrajectoryPosition() + 50, stage2.getSelectedSensorPosition());
-    }
-    */
 
     public double getStage1Encoder() {
         return stage1.getSelectedSensorPosition();
@@ -184,13 +169,4 @@ public class ArmSubsystem extends SubsystemBase {
     public void resetStage2Encoder() {
         stage2.setSelectedSensorPosition(0);
     }
-
-    /*
-    //Sample command
-    public CommandBase setArmGrabConeHP() {
-        return this.runOnce(() -> {
-            setStage1Pos(ArmConstants.ArmPickupConeHP.stage1Pos); 
-            setStage2Pos(ArmConstants.ArmPickupConeHP.stage2Pos);});
-    }
-    */
 }

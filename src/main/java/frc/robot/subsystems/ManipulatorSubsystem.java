@@ -24,11 +24,6 @@ public class ManipulatorSubsystem extends SubsystemBase{
         manipulator.setNeutralMode(NeutralMode.Brake);
         manipulator.setInverted(false);
         manipulator.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-
-        manipulator.config_kP(0, Constants.ManipulatorConstants.velocityP);
-        manipulator.config_kI(0, Constants.ManipulatorConstants.velocityI);
-        manipulator.config_kD(0, Constants.ManipulatorConstants.velocityD);
-        manipulator.config_kF(0, Constants.ManipulatorConstants.velocityF);
     }
 
     public void periodic() {
@@ -37,11 +32,6 @@ public class ManipulatorSubsystem extends SubsystemBase{
 
     public void setPourcentage(double pourcentage) {
         manipulator.set(TalonFXControlMode.PercentOutput, pourcentage);
-    }
-
-    public void setVelocity(double targetVelocity) {
-        //Values in sensor units/100ms
-        manipulator.set(TalonFXControlMode.Velocity, targetVelocity);
     }
 
     public double getOutputCurrent() {

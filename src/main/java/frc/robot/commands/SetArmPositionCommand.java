@@ -16,9 +16,6 @@ public class SetArmPositionCommand extends CommandBase {
         addRequirements(arm);
     }
 
-    public void initialise() {
-        }
-
     public void execute() {
         arm.setStage1Pos(stage1Pos);
         arm.setStage2Pos(stage2Pos);

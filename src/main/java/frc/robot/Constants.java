@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 
 public final class Constants {
     public static final class DriveConstants {
@@ -10,6 +11,28 @@ public final class Constants {
         public static final int controllerPort = 0;
         public static final int controller2Port = 1;
         public static final int gyroPort = 10;
+
+        public static final double kEncoderDistancePerPulseMeters = 0;
+
+        //As reference - based on WPILib trajectory tutorial (https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/index.html)
+        public static final class AutonomousConstants {
+            //TODO SysID on drivetrain
+            public static final double ksVolts = 0;
+            public static final double kvVoltSecondsPerMeter = 0;
+            public static final double kaVoltSecondsSquaredPerMeter = 0;
+
+            public static final double kPDriveVel = 0;
+
+            public static final double kTrackwidthMeters = 0;
+            public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+
+            public static final double kMaxSpeedMetersPerSecond = 0;
+            public static final double kMaxAccelerationMetersPerSecondSquared = 0;
+
+            //Typically correct values for a RamseteController
+            public static final double kRamseteB = 2;
+            public static final double kRamseteZeta = 0.7;
+        }
     }
 
     public static final class ArmConstants {
@@ -17,11 +40,32 @@ public final class Constants {
         public static final int stage2Port = 5;
         public static final int slotIdx = 0;
 
+
+        public static final int CANCoder1Port = 9;
+        public static final int CANCoder2Port = 8;
+
+        //Feedforward settings
         public static final double stage1StallPourcentage1 = 0.0528;
         public static final double stage1StallPourcentage2 = 0.0381;
-
         public static final double stage2StallPourcentage = 0.0449;
         
+        //CANCoder settings
+        public static final boolean CANCoder1Direction = true;
+        public static final boolean CANCoder2Direction = false;
+
+        public static final int CANCoder1MagnetOffset = 40;
+        public static final int CANCoder2MagnetOffset = -253;
+
+        //Takes into account arm reduction, though reduces absolute sensor range
+        public static final double CANCoder1SensorCoef = 0.06591797;
+
+        public static final boolean stage1SensorPhase = true;
+        public static final boolean stage2SensorPhase = true;
+
+        //Tune after every arm teardown
+        public static final int stage1MeasuredAngleHorizontal = 154;
+        public static final int stage2MeasuredAngleHorizontal = 91;
+
 
         public static final double stage1F = 0;
         public static final double stage1P = 1;
@@ -45,8 +89,7 @@ public final class Constants {
 
         public static final double pourcentageDeadband = 0;
         public static final double IZone1 = 10;
-		public static final int CANCoder1Port = 9;
-        public static final int CANCoder2Port = 8;
+
         public static final double IZone2 = 10;
 
         public static final class ArmPickupConeHP {
@@ -110,15 +153,7 @@ public final class Constants {
     }
 
     public static final class ManipulatorConstants {
-        //TODO
         public static final int manipulatorPort = 7;
-
-        public static final double velocityP = 0;
-        public static final double velocityI = 0;
-        public static final double velocityD = 0;
-        public static final double velocityF = 0;
-
-        public static final double cubePickupVelocity = 0;
     }
 
 }

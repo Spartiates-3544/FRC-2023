@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.ManipulatorSubsystem;
 
 public class PickupCubeCommand extends CommandBase{
@@ -16,7 +15,7 @@ public class PickupCubeCommand extends CommandBase{
     }
 
     public void execute() {
-        manipulator.setVelocity(Constants.ManipulatorConstants.cubePickupVelocity);
+        manipulator.setPourcentage(0.4);
         lastCurrent = manipulator.getOutputCurrent();
     }
 
@@ -25,7 +24,7 @@ public class PickupCubeCommand extends CommandBase{
     }
 
     public boolean isFinished() {
-        return false; //TODO
+        return false; //TODO add end condition (detect when there's a game piece)
     }
 
 }

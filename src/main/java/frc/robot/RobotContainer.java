@@ -46,24 +46,24 @@ public class RobotContainer {
       Commands.run(() -> drivetrain.arcadeDrive(-controller.getLeftY(), ( controller.getRightTriggerAxis() - controller.getLeftTriggerAxis() )), drivetrain)
     );
 
-    //turret.setDefaultCommand(new TrackApriltagCommand(turret, 1));
 
     //arm.setDefaultCommand(Commands.run(() -> { arm.setStage1Pourcentage(controller.getLeftY() * 0.5); arm.setStage2Pourcentage(controller.getRightY() * 0.5); }, arm));
   }
 
   private void configureBindings() {
-    //Cube
-    controller2.button(6).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 2400, 1250), new SetDrivetrainMaxOutputCommand(0.5, drivetrain)));
+    //High
+    controller2.button(6).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 2400, 1350), new SetDrivetrainMaxOutputCommand(0.3, drivetrain)));
     
     //Low
-    controller2.button(7).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 370, 1800), new SetDrivetrainMaxOutputCommand(0.7, drivetrain)));
+    controller2.button(7).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 370, 1850), new SetDrivetrainMaxOutputCommand(0.5, drivetrain)));
 
     //TODO Fix PID when stowed
     //Stowed
-    controller2.button(3).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 330, 2775), new SetDrivetrainMaxOutputCommand(1, drivetrain)));
+    controller2.button(3).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 330, 2775), new SetDrivetrainMaxOutputCommand(0.5, drivetrain)));
 
-    controller.x().whileTrue(Commands.startEnd(() -> manipulator.setPourcentage(-0.4), () -> manipulator.setPourcentage(0), manipulator));
-    controller.y().whileTrue(Commands.startEnd(() -> manipulator.setPourcentage(0.4), () -> manipulator.setPourcentage(0), manipulator));
+    controller2.button(4).whileTrue(Commands.startEnd(() -> manipulator.setPourcentage(-0.4), () -> manipulator.setPourcentage(0), manipulator));
+    controller2.button(5).whileTrue(Commands.startEnd(() -> manipulator.setPourcentage(0.4), () -> manipulator.setPourcentage(0), manipulator));
+    controller.rightBumper().toggleOnTrue(new TrackApriltagCommand(turret, 0));
 
   }
 

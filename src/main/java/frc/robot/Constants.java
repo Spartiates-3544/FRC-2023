@@ -130,7 +130,7 @@ public final class Constants {
         public static final int turretPort = 6;
         public static final int pidIdx = 0;
 
-        public static final double limelightTurretP = 0.03
+        public static final double limelightTurretP = 0.025
         ;
         public static final double limelightTurretI = 0;
         public static final double limelightTurretD = 0;

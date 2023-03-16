@@ -5,6 +5,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -25,6 +26,7 @@ public class DrivetrainSubsystem extends SubsystemBase{
     private final DifferentialDrive drive;
     private final WPI_PigeonIMU gyro;
     private final DifferentialDriveOdometry odometry;
+    private final Field2d field;
     
 
     public DrivetrainSubsystem() {
@@ -41,6 +43,9 @@ public class DrivetrainSubsystem extends SubsystemBase{
         drive = new DifferentialDrive(left, right);
 
         odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), getLeftSideMeters(), getRightSideMeters());
+
+        field = new Field2d();
+        SmartDashboard.putData("Field", field);
     }
 
     private void configMotors() {
@@ -68,13 +73,13 @@ public class DrivetrainSubsystem extends SubsystemBase{
     //TODO Check if odometry is accurate and working, also check for Field2d
     public void periodic() {
         odometry.update(gyro.getRotation2d(), getLeftSideMeters(), getRightSideMeters());
-
+        field.setRobotPose(odometry.getPoseMeters());
+        
         SmartDashboard.putData("Gyro angle", gyro);
     }
 
     public void arcadeDrive(double xSpeed, double zRotation) {
         drive.arcadeDrive(xSpeed, zRotation);
-        drive.feed();
     }
 
     public void resetEncoders() {

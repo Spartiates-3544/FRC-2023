@@ -12,18 +12,19 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.SetArmPositionCommand;
 import frc.robot.commands.SetDrivetrainMaxOutputCommand;
-import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.TrackApriltagCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -31,8 +32,8 @@ import frc.robot.subsystems.ManipulatorSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class RobotContainer {
-  CommandXboxController controller = new CommandXboxController(Constants.DriveConstants.controllerPort);
-  CommandJoystick controller2 = new CommandJoystick(Constants.DriveConstants.controller2Port);
+  private final CommandXboxController controller = new CommandXboxController(Constants.DriveConstants.controllerPort);
+  private final CommandJoystick controller2 = new CommandJoystick(Constants.DriveConstants.controller2Port);
   private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
   private final ArmSubsystem arm = new ArmSubsystem();
   private final TurretSubsystem turret = new TurretSubsystem();
@@ -43,26 +44,25 @@ public class RobotContainer {
     configureBindings();
 
     drivetrain.setDefaultCommand(
-      Commands.run(() -> drivetrain.arcadeDrive(-controller.getLeftY(), ( controller.getRightTriggerAxis() - controller.getLeftTriggerAxis() )), drivetrain)
+      Commands.run(() -> drivetrain.arcadeDrive(-controller.getLeftY(), ( controller.getRawAxis(4) - controller.getRawAxis(5) ) ), drivetrain)
     );
 
-
-    //arm.setDefaultCommand(Commands.run(() -> { arm.setStage1Pourcentage(controller.getLeftY() * 0.5); arm.setStage2Pourcentage(controller.getRightY() * 0.5); }, arm));
+    CommandScheduler.getInstance().onCommandInitialize(command -> System.out.print("Command scheduled: " + command.getName()));
+    
   }
 
   private void configureBindings() {
     //High
     controller2.button(6).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 2400, 1350), new SetDrivetrainMaxOutputCommand(0.3, drivetrain)));
-    
     //Low
     controller2.button(7).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 370, 1850), new SetDrivetrainMaxOutputCommand(0.5, drivetrain)));
-
-    //TODO Fix PID when stowed
+    //Fix PID when stowed (Fixed itself somehow??)
     //Stowed
     controller2.button(3).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 330, 2775), new SetDrivetrainMaxOutputCommand(0.5, drivetrain)));
-
+    //Manipulator control
     controller2.button(4).whileTrue(Commands.startEnd(() -> manipulator.setPourcentage(-0.4), () -> manipulator.setPourcentage(0), manipulator));
     controller2.button(5).whileTrue(Commands.startEnd(() -> manipulator.setPourcentage(0.4), () -> manipulator.setPourcentage(0), manipulator));
+
     controller.rightBumper().toggleOnTrue(new TrackApriltagCommand(turret, 0));
 
   }

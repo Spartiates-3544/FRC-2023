@@ -16,14 +16,13 @@ public final class Constants {
 
         //As reference - based on WPILib trajectory tutorial (https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/index.html)
         public static final class AutonomousConstants {
-            //TODO SysID on drivetrain
-            public static final double ksVolts = 0;
-            public static final double kvVoltSecondsPerMeter = 0;
-            public static final double kaVoltSecondsSquaredPerMeter = 0;
+            public static final double ksVolts = 0.24103;
+            public static final double kvVoltSecondsPerMeter = 1.6446;
+            public static final double kaVoltSecondsSquaredPerMeter = 0.3645;
 
-            public static final double kPDriveVel = 0;
+            public static final double kPDriveVel = 1.5833;
 
-            public static final double kTrackwidthMeters = 0;
+            public static final double kTrackwidthMeters = 0.56515;
             public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 
             public static final double kMaxSpeedMetersPerSecond = 0;

@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
@@ -28,6 +28,7 @@ import frc.robot.commands.SetDrivetrainMaxOutputCommand;
 import frc.robot.commands.TrackApriltagCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ManipulatorSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
@@ -38,7 +39,11 @@ public class RobotContainer {
   private final ArmSubsystem arm = new ArmSubsystem();
   private final TurretSubsystem turret = new TurretSubsystem();
   private final ManipulatorSubsystem manipulator = new ManipulatorSubsystem();
+  private LEDSubsystem leds = new LEDSubsystem();
   private Trajectory trajectory = new Trajectory();
+
+  //True for cone, False for cube
+  private boolean mode = true;
 
   public RobotContainer() {
     configureBindings();
@@ -52,6 +57,22 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    //Toggle game piece mode
+    controller2.button(11).onTrue(Commands.run(() -> mode = !mode));
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /*
     //High
     controller2.button(6).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 2400, 1350), new SetDrivetrainMaxOutputCommand(0.3, drivetrain)));
     //Low
@@ -59,11 +80,17 @@ public class RobotContainer {
     //Fix PID when stowed (Fixed itself somehow??)
     //Stowed
     controller2.button(3).onTrue(Commands.parallel(new SetArmPositionCommand(arm, 330, 2775), new SetDrivetrainMaxOutputCommand(0.5, drivetrain)));
-    //Manipulator control
-    controller2.button(4).whileTrue(Commands.startEnd(() -> manipulator.setPourcentage(-0.4), () -> manipulator.setPourcentage(0), manipulator));
-    controller2.button(5).whileTrue(Commands.startEnd(() -> manipulator.setPourcentage(0.4), () -> manipulator.setPourcentage(0), manipulator));
+
+
+    //controller2.button(4).whileTrue(Commands.startEnd(() -> {manipulator.setPourcentage(-0.4); leds.setRGB(130, 0, 255);}, () -> manipulator.setPourcentage(0), manipulator));
+    controller2.button(4).whileTrue(Commands.repeatingSequence(Commands.runOnce(() -> leds.setRGB(130, 0, 255), leds) , Commands.waitSeconds(0.1), Commands.runOnce(() -> leds.setRGB(0, 0, 0), leds) , Commands.waitSeconds(0.1)));
+
+    //controller2.button(5).whileTrue(Commands.startEnd(() -> {manipulator.setPourcentage(0.4); leds.setRGB(255, 200, 0);}, () -> manipulator.setPourcentage(0), manipulator));
+    controller2.button(5).whileTrue(Commands.repeatingSequence(Commands.runOnce(() -> leds.setRGB(255, 200, 0), leds) , Commands.waitSeconds(0.1), Commands.runOnce(() -> leds.setRGB(0, 0, 0), leds) , Commands.waitSeconds(0.1)));
 
     controller.rightBumper().toggleOnTrue(new TrackApriltagCommand(turret, 0));
+    //,controller.leftBumper().toggleOnTrue(Commands.repeatingSequence(new ToggleLEDsCommand(leds), new WaitCommand(0.5)));
+    */
 
   }
 
@@ -72,7 +99,7 @@ public class RobotContainer {
 
     //TODO Douteux
     try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve("paths/Path1.wpilib.json");
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve("Unnamed.wpilib.json");
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
     } catch (IOException ex) {
       DriverStation.reportError("Unable to open trajectory", ex.getStackTrace());

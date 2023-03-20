@@ -12,21 +12,22 @@ public final class Constants {
         public static final int controller2Port = 1;
         public static final int gyroPort = 10;
 
-        public static final double kEncoderDistancePerPulseMeters = 0;
+        public static final double kEncoderDistancePerPulseMeters = 3.246926E-5;
 
         //As reference - based on WPILib trajectory tutorial (https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/index.html)
         public static final class AutonomousConstants {
-            public static final double ksVolts = 0.24103;
-            public static final double kvVoltSecondsPerMeter = 1.6446;
-            public static final double kaVoltSecondsSquaredPerMeter = 0.3645;
+            public static final double ksVolts = 0.31615;
+            public static final double kvVoltSecondsPerMeter = 1.5709;
+            public static final double kaVoltSecondsSquaredPerMeter = 0.48418;
 
-            public static final double kPDriveVel = 1.5833;
+            public static final double kPDriveVel = 0.16812;
+            //public static final double kPDriveVel = 2.3027;
 
-            public static final double kTrackwidthMeters = 0.56515;
+            public static final double kTrackwidthMeters = 1.2828;
             public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 
-            public static final double kMaxSpeedMetersPerSecond = 0;
-            public static final double kMaxAccelerationMetersPerSecondSquared = 0;
+            public static final double kMaxSpeedMetersPerSecond = 0.5;
+            public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
 
             //Typically correct values for a RamseteController
             public static final double kRamseteB = 2;
@@ -44,16 +45,19 @@ public final class Constants {
         public static final int CANCoder2Port = 8;
 
         //Feedforward settings
-        public static final double stage1StallPourcentage1 = 0.0528;
-        public static final double stage1StallPourcentage2 = 0.0381;
-        public static final double stage2StallPourcentage = 0.0449;
+        //public static final double stage1StallPourcentage1 = 0.0528;
+        //public static final double stage1StallPourcentage2 = 0.0381;
+        //public static final double stage2StallPourcentage = 0.0449;
+        public static final double stage1StallPourcentage1 = 0.0469;
+        public static final double stage1StallPourcentage2 = 0.04594;
+        public static final double stage2StallPourcentage = 0.0166;
         
         //CANCoder settings
         public static final boolean CANCoder1Direction = true;
         public static final boolean CANCoder2Direction = false;
 
-        public static final int CANCoder1MagnetOffset = 40;
-        public static final int CANCoder2MagnetOffset = -253;
+        public static final int CANCoder1MagnetOffset = 335;
+        public static final int CANCoder2MagnetOffset = -249;
 
         //Takes into account arm reduction, though reduces absolute sensor range
         public static final double CANCoder1SensorCoef = 0.06591797;
@@ -70,7 +74,7 @@ public final class Constants {
         public static final double stage1P = 1;
         public static final double stage1I = 0;
         public static final double stage1D = 0.030;
-        public static final double stage1Accel = 80;
+        public static final double stage1Accel = 200;
         public static final double stage1Cruise = 150;
         public static final double stage1FwdLimit = 0;
         public static final double stage1RevLimit = 0;
@@ -80,8 +84,8 @@ public final class Constants {
         public static final double stage2P = 0.9;
         public static final double stage2I = 0;
         public static final double stage2D = 0.045;
-        public static final double stage2Accel = 15;
-        public static final double stage2Cruise = 25;
+        public static final double stage2Accel = 50;
+        public static final double stage2Cruise = 50;
         public static final double stage2FwdLimit = 0;
         public static final double stage2RevLimit = 0;
         public static final boolean stage2Invert = true;

@@ -22,6 +22,7 @@ public class TurretSubsystem extends SubsystemBase{
 
     public void periodic() {
         SmartDashboard.putNumber("Turret encoder", turret.getSelectedSensorPosition());
+        SmartDashboard.putBoolean("Switch", calibrationSwitch.get());
     }
 
     private void configMotors() {

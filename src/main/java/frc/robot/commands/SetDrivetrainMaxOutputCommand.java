@@ -19,11 +19,10 @@ public class SetDrivetrainMaxOutputCommand extends CommandBase {
     }
 
     public void end(boolean interrupted) {
-        drivetrain.setMaxOutput(0.5);
     }
 
     //Never ends until cancelled
     public boolean isFinished() {
-        return false;
+        return true;
     }
 }

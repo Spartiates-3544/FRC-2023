@@ -6,12 +6,21 @@ package frc.robot;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper.DefaultTypeResolverBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.SetArmPositionCommand;
 import frc.robot.commands.SetDrivetrainMaxOutputCommand;
@@ -40,10 +50,12 @@ public class RobotContainer {
   private final TurretSubsystem turret = new TurretSubsystem();
   private final ManipulatorSubsystem manipulator = new ManipulatorSubsystem();
   private LEDSubsystem leds = new LEDSubsystem();
-  private Trajectory trajectory = new Trajectory();
 
   //True for cone, False for cube
   private boolean mode = true;
+
+  private Trigger cube = new Trigger(() -> mode == false);
+  private Trigger cone = new Trigger(() -> mode == true);
 
   public RobotContainer() {
     configureBindings();
@@ -52,25 +64,46 @@ public class RobotContainer {
       Commands.run(() -> drivetrain.arcadeDrive(-controller.getLeftY(), ( controller.getRawAxis(4) - controller.getRawAxis(5) ) ), drivetrain)
     );
 
+    //arm.setDefaultCommand(Commands.run(() -> {arm.setStage1Pourcentage(controller.getLeftY()); arm.setStage2Pourcentage(controller.getRightY());}, arm));
     CommandScheduler.getInstance().onCommandInitialize(command -> System.out.print("Command scheduled: " + command.getName()));
     
   }
 
   private void configureBindings() {
     //Toggle game piece mode
-    controller2.button(11).onTrue(Commands.run(() -> mode = !mode));
+    controller2.button(1).onTrue(Commands.runOnce(() -> mode = !mode));
+
+    cube.whileTrue(Commands.runOnce(() -> leds.setRGB(255, 200, 0), leds));
+    cone.whileTrue(Commands.runOnce(() -> leds.setRGB(130, 0, 255), leds));
     
+    //Intake
+    controller2.button(3).and(() -> mode == false).whileTrue(Commands.runEnd(() -> manipulator.setPourcentage(0.4), () -> manipulator.setPourcentage(0), manipulator));
+    controller2.button(3).and(() -> mode == true).whileTrue(Commands.runEnd(() -> manipulator.setPourcentage(-0.4), () -> manipulator.setPourcentage(0), manipulator));
+
+    //Outtake
+    controller2.button(2).and(() -> mode == false).whileTrue(Commands.runEnd(() -> manipulator.setPourcentage(-0.4), () -> manipulator.setPourcentage(0), manipulator));
+    controller2.button(2).and(() -> mode == true).whileTrue(Commands.runEnd(() -> manipulator.setPourcentage(0.4), () -> manipulator.setPourcentage(0), manipulator));
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    /* Arm positions */
+    //Low 
+    controller2.button(7).and(() -> mode == false).onTrue(new SetArmPositionCommand(arm, 75, 1910));
+    controller2.button(7).and(() -> mode == true).onTrue(new SetArmPositionCommand(arm, 75, 1910));
+    //Mid
+    controller2.button(6).and(() -> mode == false).onTrue(Commands.sequence(new SetDrivetrainMaxOutputCommand(0.7, drivetrain), new SetArmPositionCommand(arm, 1246, 1818), Commands.waitSeconds(2), Commands.run(() -> manipulator.setPourcentage(0.4), manipulator).withTimeout(1), Commands.runOnce(() -> manipulator.setPourcentage(0), manipulator)));
+    controller2.button(6).and(() -> mode == true).onTrue(Commands.sequence(new SetDrivetrainMaxOutputCommand(0.7, drivetrain), new SetArmPositionCommand(arm, 1246, 1818), Commands.waitSeconds(2), Commands.run(() -> manipulator.setPourcentage(-0.4), manipulator).withTimeout(1), Commands.runOnce(() -> manipulator.setPourcentage(0), manipulator)));
+    //High
+    controller2.button(10).and(() -> mode == false).onTrue(Commands.sequence(new SetDrivetrainMaxOutputCommand(0.5, drivetrain), new SetArmPositionCommand(arm, 2325, 1469), Commands.waitSeconds(2), Commands.run(() -> manipulator.setPourcentage(0.4), manipulator).withTimeout(1), Commands.runOnce(() -> manipulator.setPourcentage(0), manipulator)));
+    controller2.button(10).and(() -> mode == true).onTrue(Commands.sequence(new SetDrivetrainMaxOutputCommand(0.5, drivetrain), new SetArmPositionCommand(arm, 2325, 1469), Commands.waitSeconds(2), Commands.run(() -> manipulator.setPourcentage(-0.4), manipulator).withTimeout(1), Commands.runOnce(() -> manipulator.setPourcentage(0), manipulator)));
+    //HP Shelf
+    controller2.button(11).and(() -> mode == false).onTrue(new SetArmPositionCommand(arm, 3016, 1099));
+    controller2.button(11).and(() -> mode == true).onTrue(new SetArmPositionCommand(arm, 3016, 1099));
+    //Stowed
+    controller2.button(8).onTrue(new SetArmPositionCommand(arm, 50, 2868));
+
+    //Feedforward calibration poses
+    //controller2.button(11).and(() -> mode == false).onTrue(new SetArmPositionCommand(arm, 2343, 1060));
+    //controller2.button(11).and(() -> mode == true).onTrue(new SetArmPositionCommand(arm, 2343, 2073));
+
     
     /*
     //High
@@ -97,17 +130,51 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     //return Commands.print("No autonomous command configured");
 
+    var autoVoltageConstraint =
+    new DifferentialDriveVoltageConstraint(
+        new SimpleMotorFeedforward(
+            DriveConstants.AutonomousConstants.ksVolts,
+            DriveConstants.AutonomousConstants.kvVoltSecondsPerMeter,
+            DriveConstants.AutonomousConstants.kaVoltSecondsSquaredPerMeter),
+        DriveConstants.AutonomousConstants.kDriveKinematics,
+        10);
+
+            // Create config for trajectory
+    TrajectoryConfig config =
+      new TrajectoryConfig(
+            DriveConstants.AutonomousConstants.kMaxSpeedMetersPerSecond,
+            DriveConstants.AutonomousConstants.kMaxAccelerationMetersPerSecondSquared)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(DriveConstants.AutonomousConstants.kDriveKinematics)
+        // Apply the voltage constraint
+        .addConstraint(autoVoltageConstraint);
+
+    // An example trajectory to follow.  All units in meters.
+  Trajectory exampleTrajectory =
+      TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Pass through these two interior waypoints, making an 's' curve path
+          List.of(new Translation2d(1, 0), new Translation2d(2, 0)),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(3, 0, new Rotation2d(0)),
+          // Pass config
+          config);
+
+    /*/
     //TODO Douteux
     try {
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve("Unnamed.wpilib.json");
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve("Calibration.wpilib.json");
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
     } catch (IOException ex) {
       DriverStation.reportError("Unable to open trajectory", ex.getStackTrace());
     }
+    */
 
-    RamseteCommand ramseteCommand = new RamseteCommand(trajectory, drivetrain::getPose,
+    RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, drivetrain::getPose,
      new RamseteController(DriveConstants.AutonomousConstants.kRamseteB, DriveConstants.AutonomousConstants.kRamseteZeta),
       new SimpleMotorFeedforward(DriveConstants.AutonomousConstants.ksVolts, DriveConstants.AutonomousConstants.kvVoltSecondsPerMeter, DriveConstants.AutonomousConstants.kaVoltSecondsSquaredPerMeter),
+     //new SimpleMotorFeedforward(DriveConstants.AutonomousConstants.ksVolts, DriveConstants.AutonomousConstants.kvVoltSecondsPerMeter, DriveConstants.AutonomousConstants.kaVoltSecondsSquaredPerMeter),
        DriveConstants.AutonomousConstants.kDriveKinematics,
         drivetrain::getWheelSpeeds,
          new PIDController(DriveConstants.AutonomousConstants.kPDriveVel, 0, 0),
@@ -115,7 +182,9 @@ public class RobotContainer {
            drivetrain::tankDriveVolts,
             drivetrain);
 
-    drivetrain.resetOdometry(trajectory.getInitialPose());
+      //RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, drivetrain::getPose, new RamseteController(DriveConstants.AutonomousConstants.kRamseteB, DriveConstants.AutonomousConstants.kRamseteZeta), DriveConstants.AutonomousConstants.kDriveKinematics, drivetrain::followVelocites, drivetrain);
+
+    drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
 
     return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
   }

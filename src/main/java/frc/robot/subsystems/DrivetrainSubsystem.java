@@ -76,6 +76,15 @@ public class DrivetrainSubsystem extends SubsystemBase{
         field.setRobotPose(odometry.getPoseMeters());
         
         SmartDashboard.putData("Gyro angle", gyro);
+        /*
+        SmartDashboard.putNumber("Left drive meters", getLeftSideMeters());
+        SmartDashboard.putNumber("Right drive meters", getRightSideMeters());
+        */
+        SmartDashboard.putNumber("Left drive velocity", getLeftSideVelocityMetersPerSecond());
+        SmartDashboard.putNumber("Right drive velocity", getRightSideVelocityMetersPerSecond());
+        SmartDashboard.putNumber("Left side output", left1.getMotorOutputVoltage());
+        SmartDashboard.putNumber("Right side output", right1.getMotorOutputVoltage());
+
     }
 
     public void arcadeDrive(double xSpeed, double zRotation) {
@@ -124,6 +133,10 @@ public class DrivetrainSubsystem extends SubsystemBase{
         return odometry.getPoseMeters();
     }
 
+    public void followVelocites(double left, double right) {
+        
+    }
+
     public void tankDriveVolts(double leftVolts, double rightVolts) {
         left.setVoltage(leftVolts);
         right.setVoltage(rightVolts);
@@ -132,6 +145,7 @@ public class DrivetrainSubsystem extends SubsystemBase{
 
     public void resetOdometry(Pose2d pose) {
         resetEncoders();
+        gyro.reset();
         odometry.resetPosition(gyro.getRotation2d(), getLeftSideMeters(), getRightSideMeters(), pose);
     }
 

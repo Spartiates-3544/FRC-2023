@@ -32,14 +32,15 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void periodic() {
-        //SmartDashboard.putNumber("Stage 1 CANcoder Absolute", CANCoder1.getAbsolutePosition());
+        SmartDashboard.putNumber("Stage 1 CANcoder Absolute", CANCoder1.getAbsolutePosition());
         SmartDashboard.putNumber("Stage 2 CANcoder Absolute", CANCoder2.getAbsolutePosition());
         /*
         SmartDashboard.putNumber("Stage 2 CANCoder Relative", CANCoder2.getPosition());
         SmartDashboard.putNumber("Stage 2 Falcon", stage2.getSelectedSensorPosition());
+        */
         SmartDashboard.putNumber("Stage 1 output", stage1.get());
         SmartDashboard.putNumber("Stage 2 output", stage2.get());
-        */
+        
 
         SmartDashboard.putNumber("1 Pourcentage", stage1.getMotorOutputPercent());
         SmartDashboard.putNumber("2 Pourcentage", stage2.getMotorOutputPercent());
@@ -95,6 +96,7 @@ public class ArmSubsystem extends SubsystemBase {
         stage1.config_kD(ArmConstants.slotIdx, ArmConstants.stage1D);
         stage1.configMotionCruiseVelocity(ArmConstants.stage1Cruise);
         stage1.configMotionAcceleration(ArmConstants.stage1Accel);
+        stage1.configMotionSCurveStrength(2);
 
         stage2.selectProfileSlot(0, 0);
         stage2.config_kF(ArmConstants.slotIdx, ArmConstants.stage2F);
@@ -104,6 +106,7 @@ public class ArmSubsystem extends SubsystemBase {
         stage2.config_kD(ArmConstants.slotIdx, ArmConstants.stage2D);
         stage2.configMotionCruiseVelocity(ArmConstants.stage2Cruise);
         stage2.configMotionAcceleration(ArmConstants.stage2Accel);
+        stage2.configMotionSCurveStrength(2);
         //Soft limits
         /*/
         stage1.configForwardSoftLimitThreshold(ArmConstants.stage1FwdLimit);

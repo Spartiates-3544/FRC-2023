@@ -28,6 +28,7 @@ public class ManipulatorSubsystem extends SubsystemBase{
 
     public void periodic() {
         SmartDashboard.putNumber("Manipulator velocity", manipulator.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("Output current", getOutputCurrent());
     }
 
     public void setPourcentage(double pourcentage) {

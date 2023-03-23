@@ -13,6 +13,7 @@ public final class Constants {
         public static final int gyroPort = 10;
 
         public static final double kEncoderDistancePerPulseMeters = 3.246926E-5;
+        public static final double ramp = 0.8;
 
         //As reference - based on WPILib trajectory tutorial (https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/index.html)
         public static final class AutonomousConstants {

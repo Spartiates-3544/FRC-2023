@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -27,6 +28,8 @@ public class DrivetrainSubsystem extends SubsystemBase{
     private final WPI_PigeonIMU gyro;
     private final DifferentialDriveOdometry odometry;
     private final Field2d field;
+    private final SlewRateLimiter ramp;
+    private boolean rampEnable;
     
 
     public DrivetrainSubsystem() {
@@ -45,6 +48,9 @@ public class DrivetrainSubsystem extends SubsystemBase{
         odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), getLeftSideMeters(), getRightSideMeters());
 
         field = new Field2d();
+
+        ramp = new SlewRateLimiter(DriveConstants.ramp);
+        rampEnable = false;
         SmartDashboard.putData("Field", field);
     }
 
@@ -87,8 +93,17 @@ public class DrivetrainSubsystem extends SubsystemBase{
 
     }
 
+    public void enableRamp(boolean enable) {
+        rampEnable = enable;
+    }
+
     public void arcadeDrive(double xSpeed, double zRotation) {
-        drive.arcadeDrive(xSpeed, zRotation);
+        if (rampEnable) {
+            drive.arcadeDrive(ramp.calculate(xSpeed), zRotation);
+        }
+        if (!rampEnable) {
+            drive.arcadeDrive(xSpeed, zRotation);
+        }
     }
 
     public void resetEncoders() {
@@ -97,7 +112,7 @@ public class DrivetrainSubsystem extends SubsystemBase{
         right1.setSelectedSensorPosition(0);
         right2.setSelectedSensorPosition(0);
     }
-
+    /*
     public double getLeftSideMeters() {
         return ( (left1.getSelectedSensorPosition() + left2.getSelectedSensorPosition()) / 2 ) * DriveConstants.kEncoderDistancePerPulseMeters; 
     }
@@ -105,12 +120,21 @@ public class DrivetrainSubsystem extends SubsystemBase{
     public double getRightSideMeters() {
         return ( (right1.getSelectedSensorPosition() + right2.getSelectedSensorPosition()) / 2 ) * DriveConstants.kEncoderDistancePerPulseMeters; 
     }
+    */
 
+    public double getLeftSideMeters() {
+        return (((left1.getSelectedSensorPosition() / 2048) / 6) * 0.478778720407);
+    }
+
+    public double getRightSideMeters() {
+        return (((right1.getSelectedSensorPosition() / 2048) / 6) * 0.478778720407);
+    }
 
     public void setMaxOutput(double maxOutput) {
         drive.setMaxOutput(maxOutput);
     }
 
+    /*
     public double getLeftSideVelocityMetersPerSecond() {
         double avgTicksPerSecond = ( (left1.getSelectedSensorVelocity() + left2.getSelectedSensorVelocity()) / 2 ) * 10; 
         return avgTicksPerSecond * DriveConstants.kEncoderDistancePerPulseMeters;
@@ -119,6 +143,15 @@ public class DrivetrainSubsystem extends SubsystemBase{
     public double getRightSideVelocityMetersPerSecond() {
         double avgTicksPerSecond = ( (right1.getSelectedSensorVelocity() + right2.getSelectedSensorVelocity()) / 2 ) * 10; 
         return avgTicksPerSecond * DriveConstants.kEncoderDistancePerPulseMeters;
+    }
+    */
+
+    public double getLeftSideVelocityMetersPerSecond() {
+        return ((((left1.getSelectedSensorVelocity() * 10) / 2048) / 6) / 0.478778720407);
+    }
+
+    public double getRightSideVelocityMetersPerSecond() {
+        return ((((right1.getSelectedSensorVelocity() * 10) / 2048) / 6) / 0.478778720407);
     }
 
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {

@@ -17,15 +17,15 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     private void setBluePourcentage(double pourcentage) {
-        canifier.setLEDOutput(pourcentage, LEDChannel.LEDChannelA);
+        canifier.setLEDOutput(pourcentage / 2, LEDChannel.LEDChannelA);
     }
 
     private void setRedPourcentage(double pourcentage) {
-        canifier.setLEDOutput(pourcentage, LEDChannel.LEDChannelB);
+        canifier.setLEDOutput(pourcentage / 2, LEDChannel.LEDChannelB);
     }
 
     private void setGreenPourcentage(double pourcentage) {
-        canifier.setLEDOutput(pourcentage, LEDChannel.LEDChannelC);
+        canifier.setLEDOutput(pourcentage / 2, LEDChannel.LEDChannelC);
     }
 
     public void setRGB(double R, double G, double B) {

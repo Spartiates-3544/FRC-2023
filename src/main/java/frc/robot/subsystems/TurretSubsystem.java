@@ -6,7 +6,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants;
 
@@ -18,11 +19,12 @@ public class TurretSubsystem extends SubsystemBase{
         turret = new WPI_TalonFX(TurretConstants.turretPort);
         calibrationSwitch = new DigitalInput(TurretConstants.calSwitchChannel);
         configMotors();
+        Shuffleboard.getTab("Teleop").addBoolean("At zero", () -> !calibrationSwitch.get()).withPosition(6, 0).withSize(1, 1).withWidget(BuiltInWidgets.kBooleanBox);
     }
 
     public void periodic() {
-        SmartDashboard.putNumber("Turret encoder", turret.getSelectedSensorPosition());
-        SmartDashboard.putBoolean("Switch", calibrationSwitch.get());
+        //SmartDashboard.putNumber("Turret encoder", turret.getSelectedSensorPosition());
+        //SmartDashboard.putBoolean("Switch", calibrationSwitch.get());
     }
 
     private void configMotors() {
@@ -57,7 +59,7 @@ public class TurretSubsystem extends SubsystemBase{
     }
 
     public boolean getCalibrationSwitch() {
-        return calibrationSwitch.get();
+        return !calibrationSwitch.get();
     }
 
     public double getEncoder() {

@@ -12,7 +12,13 @@ public class CalibrateTurretCommand extends CommandBase {
     }
 
     public void execute() {
-        turret.setTurret(-0.35);
+        if (turret.getEncoder() > 0) {
+            turret.setTurret(-0.35);
+        }
+
+        if (turret.getEncoder() < 0) {
+            turret.setTurret(0.35);
+        }
     }
 
     public void end(boolean interrupted) {
@@ -22,7 +28,7 @@ public class CalibrateTurretCommand extends CommandBase {
 
 
     public boolean isFinished() {
-        return !turret.getCalibrationSwitch();
+        return turret.getCalibrationSwitch();
     }
 
 }

@@ -6,8 +6,9 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -30,6 +31,7 @@ public class DrivetrainSubsystem extends SubsystemBase{
     private final Field2d field;
     private final SlewRateLimiter ramp;
     private boolean rampEnable;
+    private double maxOutput = 1;
     
 
     public DrivetrainSubsystem() {
@@ -51,7 +53,9 @@ public class DrivetrainSubsystem extends SubsystemBase{
 
         ramp = new SlewRateLimiter(DriveConstants.ramp);
         rampEnable = false;
-        SmartDashboard.putData("Field", field);
+        Shuffleboard.getTab("Autonomous").add("Gyro", gyro).withWidget(BuiltInWidgets.kGyro).withPosition(6, 0).withSize(2, 2);
+        //Shuffleboard.getTab("Teleop").add("Gyro", gyro).withWidget(BuiltInWidgets.kGyro).withPosition(6, 3).withSize(2, 2);
+        Shuffleboard.getTab("Teleop").add(field).withWidget(BuiltInWidgets.kField).withPosition(6, 2).withSize(4, 3);
     }
 
     private void configMotors() {
@@ -76,21 +80,24 @@ public class DrivetrainSubsystem extends SubsystemBase{
         right2.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
 
-    //TODO Check if odometry is accurate and working, also check for Field2d
     public void periodic() {
         odometry.update(gyro.getRotation2d(), getLeftSideMeters(), getRightSideMeters());
         field.setRobotPose(odometry.getPoseMeters());
-        
-        SmartDashboard.putData("Gyro angle", gyro);
         /*
         SmartDashboard.putNumber("Left drive meters", getLeftSideMeters());
         SmartDashboard.putNumber("Right drive meters", getRightSideMeters());
         */
-        SmartDashboard.putNumber("Left drive velocity", getLeftSideVelocityMetersPerSecond());
-        SmartDashboard.putNumber("Right drive velocity", getRightSideVelocityMetersPerSecond());
-        SmartDashboard.putNumber("Left side output", left1.getMotorOutputVoltage());
-        SmartDashboard.putNumber("Right side output", right1.getMotorOutputVoltage());
+        //SmartDashboard.putNumber("Left drive velocity", getLeftSideVelocityMetersPerSecond());
+        //SmartDashboard.putNumber("Right drive velocity", getRightSideVelocityMetersPerSecond());
+        //SmartDashboard.putNumber("Left side output", left1.getMotorOutputVoltage());
+        //SmartDashboard.putNumber("Right side output", right1.getMotorOutputVoltage());
+    }
 
+    public void setNeutralMode(NeutralMode mode) {
+        left1.setNeutralMode(mode);
+        left2.setNeutralMode(mode);
+        right1.setNeutralMode(mode);
+        right2.setNeutralMode(mode);
     }
 
     public void enableRamp(boolean enable) {
@@ -112,7 +119,7 @@ public class DrivetrainSubsystem extends SubsystemBase{
         right1.setSelectedSensorPosition(0);
         right2.setSelectedSensorPosition(0);
     }
-    /*
+
     public double getLeftSideMeters() {
         return ( (left1.getSelectedSensorPosition() + left2.getSelectedSensorPosition()) / 2 ) * DriveConstants.kEncoderDistancePerPulseMeters; 
     }
@@ -120,8 +127,8 @@ public class DrivetrainSubsystem extends SubsystemBase{
     public double getRightSideMeters() {
         return ( (right1.getSelectedSensorPosition() + right2.getSelectedSensorPosition()) / 2 ) * DriveConstants.kEncoderDistancePerPulseMeters; 
     }
-    */
 
+    /*
     public double getLeftSideMeters() {
         return (((left1.getSelectedSensorPosition() / 2048) / 6) * 0.478778720407);
     }
@@ -129,8 +136,9 @@ public class DrivetrainSubsystem extends SubsystemBase{
     public double getRightSideMeters() {
         return (((right1.getSelectedSensorPosition() / 2048) / 6) * 0.478778720407);
     }
-
+    */
     public void setMaxOutput(double maxOutput) {
+        this.maxOutput = maxOutput;
         drive.setMaxOutput(maxOutput);
     }
 
@@ -166,10 +174,6 @@ public class DrivetrainSubsystem extends SubsystemBase{
         return odometry.getPoseMeters();
     }
 
-    public void followVelocites(double left, double right) {
-        
-    }
-
     public void tankDriveVolts(double leftVolts, double rightVolts) {
         left.setVoltage(leftVolts);
         right.setVoltage(rightVolts);
@@ -180,6 +184,14 @@ public class DrivetrainSubsystem extends SubsystemBase{
         resetEncoders();
         gyro.reset();
         odometry.resetPosition(gyro.getRotation2d(), getLeftSideMeters(), getRightSideMeters(), pose);
+    }
+
+    public double getMaxOutput() {
+        return maxOutput;
+    }
+
+    public boolean getRampEnabled() {
+        return rampEnable;
     }
 
 }

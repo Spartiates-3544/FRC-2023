@@ -10,7 +10,6 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
@@ -38,15 +37,15 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Stage 2 CANCoder Relative", CANCoder2.getPosition());
         SmartDashboard.putNumber("Stage 2 Falcon", stage2.getSelectedSensorPosition());
         */
-        SmartDashboard.putNumber("Stage 1 output", stage1.get());
-        SmartDashboard.putNumber("Stage 2 output", stage2.get());
+        //SmartDashboard.putNumber("Stage 1 output", stage1.get());
+        //SmartDashboard.putNumber("Stage 2 output", stage2.get());
         
 
-        SmartDashboard.putNumber("1 Pourcentage", stage1.getMotorOutputPercent());
-        SmartDashboard.putNumber("2 Pourcentage", stage2.getMotorOutputPercent());
+        //SmartDashboard.putNumber("1 Pourcentage", stage1.getMotorOutputPercent());
+        //SmartDashboard.putNumber("2 Pourcentage", stage2.getMotorOutputPercent());
 
-        SmartDashboard.putNumber("Encodeur 1", stage1.getSelectedSensorPosition());
-        SmartDashboard.putNumber("Encodeur 2", stage2.getSelectedSensorPosition());
+        //SmartDashboard.putNumber("Encodeur 1", stage1.getSelectedSensorPosition());
+        //SmartDashboard.putNumber("Encodeur 2", stage2.getSelectedSensorPosition());
 
         //Set Relative to Absolute for Motion Magic (??)
         CANCoder1.setPositionToAbsolute(30);

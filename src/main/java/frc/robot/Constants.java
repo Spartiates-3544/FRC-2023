@@ -13,7 +13,7 @@ public final class Constants {
         public static final int gyroPort = 10;
 
         public static final double kEncoderDistancePerPulseMeters = 3.246926E-5;
-        public static final double ramp = 0.8;
+        public static final double ramp = 0.9;
 
         //As reference - based on WPILib trajectory tutorial (https://docs.wpilib.org/en/stable/docs/software/pathplanning/trajectory-tutorial/index.html)
         public static final class AutonomousConstants {
@@ -57,7 +57,8 @@ public final class Constants {
         public static final boolean CANCoder1Direction = true;
         public static final boolean CANCoder2Direction = false;
 
-        public static final int CANCoder1MagnetOffset = 335;
+        //public static final int CANCoder1MagnetOffset = 335;
+        public static final int CANCoder1MagnetOffset = 356;
         public static final int CANCoder2MagnetOffset = -249;
 
         //Takes into account arm reduction, though reduces absolute sensor range
@@ -75,8 +76,8 @@ public final class Constants {
         public static final double stage1P = 1;
         public static final double stage1I = 0;
         public static final double stage1D = 0.030;
-        public static final double stage1Accel = 200;
-        public static final double stage1Cruise = 150;
+        public static final double stage1Accel = 300;
+        public static final double stage1Cruise = 200;
         public static final double stage1FwdLimit = 0;
         public static final double stage1RevLimit = 0;
         public static final boolean stage1Invert = true;
@@ -85,8 +86,8 @@ public final class Constants {
         public static final double stage2P = 0.9;
         public static final double stage2I = 0;
         public static final double stage2D = 0.045;
-        public static final double stage2Accel = 50;
-        public static final double stage2Cruise = 50;
+        public static final double stage2Accel = 150;
+        public static final double stage2Cruise = 200;
         public static final double stage2FwdLimit = 0;
         public static final double stage2RevLimit = 0;
         public static final boolean stage2Invert = true;
@@ -145,8 +146,8 @@ public final class Constants {
         //public static final double turretP = 1.1;
         public static final double turretI = 0.0105;
         public static final double turretD = 0.1;
-        public static final int turretAccel = 24000;
-        public static final int turretCruise = 15000;
+        public static final int turretAccel = 15000;
+        public static final int turretCruise = 10000;
 
         public static final double pourcentDeadband = 0.01;
 

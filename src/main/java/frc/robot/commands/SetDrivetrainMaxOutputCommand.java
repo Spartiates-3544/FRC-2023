@@ -8,7 +8,7 @@ public class SetDrivetrainMaxOutputCommand extends CommandBase {
     private double maxOutput;
     private DrivetrainSubsystem drivetrain;
 
-    //Kinda wonky solution, does not set requirements for drivetrain. TODO Find better way?
+    //Kinda wonky solution, does not set requirements for drivetrain.
     public SetDrivetrainMaxOutputCommand(double maxOutput, DrivetrainSubsystem drivetrain) {
         this.maxOutput = maxOutput;
         this.drivetrain = drivetrain;

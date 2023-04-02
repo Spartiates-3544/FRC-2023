@@ -20,16 +20,20 @@ public class PickupCommand extends CommandBase{
         if (cube) {
             manipulator.setPourcentage(-0.4);
         }
-        manipulator.setPourcentage(0.4);
+        if (!cube) {
+            manipulator.setPourcentage(0.4); 
+        }
 
         
-        if (manipulator.getOutputCurrent() >= 20) {
+        if (manipulator.getOutputCurrent() >= 18) {
             counter++;
         }
 
-        if (manipulator.getOutputCurrent() < 20) {
+        /*/
+        if (manipulator.getOutputCurrent() < 15) {
             counter--;
         }
+        */
 
         SmartDashboard.putNumber("Counter", counter);
     }
@@ -40,7 +44,7 @@ public class PickupCommand extends CommandBase{
     }
 
     public boolean isFinished() {
-        return counter > 10;
+        return counter >= 15;
 
     }
 
